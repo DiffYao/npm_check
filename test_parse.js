@@ -1,5 +1,3 @@
-var parse = require("./parser/es6")
+var parse = require("./parser/jsx")
 
-var parseFile = parse.parseES6("/Users/diffyao/Code/node_learn/easy_app/index.js")
-
-parseFile.then((val) => console.log("asynchronous logging has val:",val))
+var parseFile = parse.parse("/Users/diffyao/Code/node_learn/easy_app/index.js")

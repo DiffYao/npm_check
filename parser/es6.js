@@ -1,5 +1,4 @@
 var parser = require("@babel/parser");
-
 var file = require("../util/file");
 
 exports.parseES6 = async function (filename) {

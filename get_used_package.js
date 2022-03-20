@@ -5,16 +5,6 @@ var depcheck = require("depcheck")
 const options = {
     ignoreBinPackage: false, // ignore the packages with bin entry
     skipMissing: false, // skip calculation of missing dependencies
-    ignorePatterns: [
-      // files matching these patterns will be ignored
-      'sandbox',
-      'dist',
-      'bower_components',
-    ],
-    ignoreMatches: [
-      // ignore dependencies that matches these globs
-      'grunt-*',
-    ],
     parsers: {
       // the target parsers
       '**/*.js': depcheck.parser.es6,
