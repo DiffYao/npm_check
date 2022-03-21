@@ -5,8 +5,8 @@ var parser = require("./parser/esprima");
 var detector = require("./detector/requireCallExpression");
 
 // 获取定义的package
-rootDir = "/Users/diffyao/Code/node_learn/easy_app";
-fileName = "/Users/diffyao/Code/node_learn/easy_app/index.js";
+rootDir = process.cwd() + "/easy_app";
+fileName = rootDir + "/index.js";
 
 depDefined = getDefinedPkg.getDeps(rootDir);
 console.log("package.json中声明的 pkg");
