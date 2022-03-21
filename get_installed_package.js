@@ -6,8 +6,7 @@ const path = require('path');
 module.exports = function (cwd) {
     const GLOBBY_PACKAGE_JSON = '{*/package.json, @*/*/package.json}';
     const installedPackages = globby.sync(GLOBBY_PACKAGE_JSON, {cwd: cwd});
-    console.log(cwd)
-    console.log(installedPackages)
+
     console.log(globby.sync("/Users/diffyao/Code/node_learn/npm_check/*package.json"))
     return _(installedPackages)
         .map(pkgPath => {
