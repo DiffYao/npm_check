@@ -1,11 +1,14 @@
-var parser = require("esprima")
-var file = require("../util/file")
+var parser = require("esprima");
+var file = require("../util/file");
 
 exports.default = async function (filename) {
-  const content = await file.getContent(filename)
-  return (0, parser.parse)(content, {
-    sourceType: "module",
-  })
-}
+  const content = await file.getContent(filename);
+  try {
+    return parser.parseModule(content);
+  } catch (error) {
+    console.log(content);
+    return 0;
+  }
+};
 
-module.exports = exports.default
+module.exports = exports.default;

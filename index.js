@@ -2,7 +2,8 @@ var getDefinedPkg = require("./get_defined_pkg");
 var dev = require("./get_dependence");
 var lodash = require("lodash");
 var parser = require("./parser/esprima");
-var detector = require("./detector/requireCallExpression");
+var requireDetector = require("./detector/requireCallExpression");
+var importDetector = require("./detector/importCallExpression");
 
 // 获取定义的package
 rootDir = process.cwd() + "/easy_app";
@@ -12,9 +13,13 @@ depDefined = getDefinedPkg.getDeps(rootDir);
 console.log("package.json中声明的 pkg");
 console.log(depDefined);
 
+detectors = [
+  requireDetector, 
+  importDetector,
+]
 // 获取项目中声明的pkg
 dev
-  .getDeclaredPkg(fileName, rootDir, depDefined, parser, detector)
+  .getDeclaredPkg(fileName, rootDir, depDefined, parser, detectors)
   .then((depUsed) => {
     console.log("使用的依赖: ");
     console.log(depUsed);
