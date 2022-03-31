@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "main" : "node index.js"
+    "main": "node cli.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/DiffYao/npm_check#readme",
   "dependencies": {
     "globby": "^4.1.0",
+    "prettyjson": "^1.2.5",
     "xtend": "^4.0.2"
   }
 }
