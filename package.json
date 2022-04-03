@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/DiffYao/npm_check#readme",
   "dependencies": {
+    "@babel/parser": "^7.17.8",
+    "acorn": "^8.7.0",
     "globby": "^4.1.0",
     "prettyjson": "^1.2.5",
     "xtend": "^4.0.2"

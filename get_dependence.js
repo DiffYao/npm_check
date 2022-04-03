@@ -46,6 +46,7 @@ function detect(detectors, node, deps) {
     try {
       return detector(node, deps);
     } catch (error) {
+      console.log(error)
       return [];
     }
   }).flatten().value();

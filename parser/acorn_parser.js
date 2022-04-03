@@ -1,12 +1,17 @@
-var parser = require("esprima");
+var acorn = require("acorn");
+var babel = require("@babel/parser");
 var file = require("../util/file");
 
 exports.default = async function (filename) {
   const content = await file.getContent(filename);
   try {
-    return parser.parseModule(content);
+    return acorn.parse(content, {
+      sourceType: 'module',
+      ecmaVersion: 'latest'
+    });
   } catch (error) {
-    console.log(content);
+    console.log(error);
+    console.log(filename);
     return 0;
   }
 };

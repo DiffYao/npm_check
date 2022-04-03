@@ -6,8 +6,9 @@ exports.check = function (rootDir) {
   var detectors = [
     require("./detector/requireCallExpression"),
     require("./detector/importCallExpression"),
+    require("./detector/importDeclaration"),
   ];
-  var parser = require("./parser/esprima");
+  var parser = require("./parser/parser");
 
   // 获取定义的package
   var dep = getDefinedPkg.getDeps(rootDir);

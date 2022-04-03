@@ -60,7 +60,6 @@ finder.on("end", () => {
         invalidDirs: {},
       }
     );
-    console.log(prettyjson.render(results));
   });
 });
 
