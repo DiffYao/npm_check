@@ -3,59 +3,78 @@ const lodash = require("lodash");
 const getDefinedPkg = require("./get_defined_pkg");
 
 exports.check = function (rootDir) {
-  var detectors = [
-    require("./detector/requireCallExpression"),
-    require("./detector/importCallExpression"),
-    require("./detector/importDeclaration"),
-  ];
-  var parser = require("./parser/parser");
+	var detectors = [
+		require("./detector/requireCallExpression"),
+		require("./detector/importCallExpression"),
+		require("./detector/importDeclaration"),
+	];
+	var parser = require("./parser/espree_parser");
 
-  // 获取定义的package
-  var dep = getDefinedPkg.getDeps(rootDir);
+	// 获取定义的package
+	var dep = getDefinedPkg.getDeps(rootDir);
 
-  deps = dep.deps;
-  devDeps = dep.devdeps;
-  check
-    .checkProject(rootDir, parser, detectors)
-    .then((result) => buildResult(result, deps, devDeps))
-    .then(console.log);
+	let deps = dep.deps;
+	let devDeps = dep.devdeps;
+
+	return check
+		.checkProject(rootDir, parser, detectors)
+		.then((result) => buildResult(result, deps, devDeps))
+		.then((res) => {
+			console.log(res);
+			return res;
+		});
 };
 
 function buildResult(result, deps, devDeps) {
-  const usingDepsLookup = lodash(result.using)
-    .toPairs()
-    .map(([file, dep]) => [dep, lodash.times(dep.length, () => file)])
-    .map((pairs) => lodash.zip(...pairs))
-    .flatten()
-    .groupBy(([dep]) => dep)
-    .mapValues((pairs) => pairs.map(lodash.last))
-    .value();
+	const usingDepsLookup = lodash(result.using)
+		.toPairs()
+		.map(([file, dep]) => [dep, lodash.times(dep.length, () => file)])
+		.map((pairs) => lodash.zip(...pairs))
+		.flatten()
+		.groupBy(([dep]) => dep)
+		.mapValues((pairs) => pairs.map(lodash.last))
+		.value();
 
-  const usingDeps = Object.keys(usingDepsLookup);
+	const trulyUsingDepsLookup = lodash(result.trulyUsing)
+		.toPairs()
+		.map(([file, dep]) => [dep, lodash.times(dep.length, () => file)])
+		.map((pairs) => lodash.zip(...pairs))
+		.flatten()
+		.groupBy(([dep]) => dep)
+		.mapValues((pairs) => pairs.map(lodash.last))
+		.value();
 
-  const missingDepsLookup = (() => {
-    const allDeps = lodash.union(deps, devDeps);
+	const usingDeps = Object.keys(usingDepsLookup);
+	const trulyUsingDeps = Object.keys(trulyUsingDepsLookup);
 
-    const missingDeps = lodash.difference(usingDeps, allDeps);
-    return lodash(missingDeps)
-      .map((missingDep) => [missingDep, usingDepsLookup[missingDep]])
-      .fromPairs()
-      .value();
-  })();
+	// UsedButNotDefined
+	const missingDepsLookup = (() => {
+		const allDeps = lodash.union(deps, devDeps);
 
-  const watestDepsLookup = (() => {
-    const allDeps = lodash.union(deps, devDeps);
-    const missingDeps = lodash.difference(allDeps, usingDeps);
-    return missingDeps;
-  })();
+		const missingDeps = lodash.difference(usingDeps, allDeps);
+		return lodash(missingDeps)
+			.map((missingDep) => [missingDep, usingDepsLookup[missingDep]])
+			.fromPairs()
+			.value();
+	})();
 
-  return {
-    DefinedButNotUsed: lodash.difference(deps, usingDeps),
-    UsedButNotDefined: missingDepsLookup,
-    Used: usingDepsLookup,
-    InvalidFiles: result.invalidFiles,
-    InvalidDirs: result.invalidDirs,
-  };
+	// ImportButNotTrulyUsed
+	const notTrulyUsed = (() => {
+		const missingDeps = lodash.difference(usingDeps, trulyUsingDeps);
+		return lodash(missingDeps)
+			.map((missingDep) => [missingDep, usingDepsLookup[missingDep]])
+			.fromPairs()
+			.value();
+	})();
+
+	return {
+		DefinedButNotUsed: lodash.difference(deps, usingDeps),
+		UsedButNotDefined: missingDepsLookup,
+		// Used: usingDepsLookup,
+		ImportButNotTrulyUsed: notTrulyUsed,
+		InvalidFiles: result.invalidFiles,
+		InvalidDirs: result.invalidDirs,
+	};
 }
 
-module.exports = exports.check
+module.exports = exports.check;

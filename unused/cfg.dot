@@ -1,0 +1,17 @@
+// cfg
+digraph control_flow_graph {
+    node [shape = doublecircle] 2
+    node [shape = circle]
+    
+    // Unconditional edges
+    1 -> 35 [label = " http2 = require('http')"]
+    35 -> 36 [label = " fs = require('fs')"]
+    36 -> 37 [label = " cats = require('cat-ascii-faces')"]
+    37 -> 38 [label = " uuidv4 = require('uuid/v4')"]
+    38 -> 39 [label = " digit = 10"]
+    39 -> 40 [label = " http2.createServer($$func1).listen(8124)"]
+    40 -> 41 [label = " cats()"]
+    41 -> 42 [label = " uuidv4()"]
+    42 -> 43 [label = " console.log('Server running at port 8124/')"]
+    43 -> 2 [label = " require('url').parse(req.url, true)"]
+}

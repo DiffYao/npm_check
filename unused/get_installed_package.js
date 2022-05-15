@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const globby = require('globby');
-const readPackageJson = require('./read_package_json');
+const readPackageJson = require('../read_package_json');
 const path = require('path');
 
 module.exports = function (cwd) {
