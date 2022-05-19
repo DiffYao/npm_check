@@ -1,3 +1,10 @@
-var uuidv4 = require("uuid/v4");
+for (let i = 0; i < 10; i++) {
+	var a = require("acorn");
+	// a = a.parse();
+	// a = 10000;
+	// console.log(a);
+	continue;
+	// a.parse("a");
+}
 
-console.log(uuidv4());
+// bar();

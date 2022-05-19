@@ -1,4 +1,4 @@
-var expree = require("espree");
+var espree = require("espree");
 var file = require("../util/file");
 
 const shebangPattern = /^#!([^\r\n]+)/u;
@@ -11,10 +11,11 @@ exports.default = async function (filename) {
 	);
 	try {
 		return {
-			astTree: expree.parse(textToParse, {
+			astTree: espree.parse(textToParse, {
 				range: true,
-				loc: false,
-				comment: false,
+				loc: true,
+				comment: true,
+				tokens: true,
 				ecmaVersion: 2022,
 				sourceType: "module",
 				ecmaFeatures: {
@@ -23,6 +24,8 @@ exports.default = async function (filename) {
 					impliedStrict: true,
 				},
 			}),
+			code: content,
+			filename: filename,
 			error: null,
 		};
 	} catch (error) {

@@ -3,21 +3,16 @@ const lodash = require("lodash");
 const getDefinedPkg = require("./get_defined_pkg");
 
 exports.check = function (rootDir) {
-	var detectors = [
-		require("./detector/requireCallExpression"),
-		require("./detector/importCallExpression"),
-		require("./detector/importDeclaration"),
-	];
-	var parser = require("./parser/espree_parser");
+
 
 	// 获取定义的package
 	var dep = getDefinedPkg.getDeps(rootDir);
 
 	let deps = dep.deps;
 	let devDeps = dep.devdeps;
-
+	
 	return check
-		.checkProject(rootDir, parser, detectors)
+		.checkProject(rootDir)
 		.then((result) => buildResult(result, deps, devDeps))
 		.then((res) => {
 			console.log(res);
@@ -71,7 +66,7 @@ function buildResult(result, deps, devDeps) {
 		DefinedButNotUsed: lodash.difference(deps, usingDeps),
 		UsedButNotDefined: missingDepsLookup,
 		// Used: usingDepsLookup,
-		ImportButNotTrulyUsed: notTrulyUsed,
+		// ImportButNotTrulyUsed: notTrulyUsed,
 		InvalidFiles: result.invalidFiles,
 		InvalidDirs: result.invalidDirs,
 	};

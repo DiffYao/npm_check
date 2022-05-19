@@ -18,7 +18,7 @@ exports.collectUnusedVariables = function collectUnusedVariables(
 	const childScopes = scope.childScopes;
 	let i, l;
 
-	if (scope.type !== "global" || config.vars === "all") {
+	if (scope.type !== "global") {
 		for (i = 0, l = variables.length; i < l; ++i) {
 			const variable = variables[i];
 
@@ -64,21 +64,6 @@ exports.collectUnusedVariables = function collectUnusedVariables(
 					continue;
 				}
 
-				// skip catch variables
-				if (type === "CatchClause") {
-					if (config.caughtErrors === "none") {
-						continue;
-					}
-
-					// skip ignored parameters
-					if (
-						config.caughtErrorsIgnorePattern &&
-						config.caughtErrorsIgnorePattern.test(def.name.name)
-					) {
-						continue;
-					}
-				}
-
 				if (type === "Parameter") {
 					// skip ignored parameters
 					if (!def.node.parent) {
@@ -89,36 +74,6 @@ exports.collectUnusedVariables = function collectUnusedVariables(
 						(def.node.parent.type === "Property" ||
 							def.node.parent.type === "MethodDefinition") &&
 						def.node.parent.kind === "set"
-					) {
-						continue;
-					}
-
-					// if "args" option is "none", skip any parameter
-					if (config.args === "none") {
-						continue;
-					}
-
-					// skip ignored parameters
-					if (
-						config.argsIgnorePattern &&
-						config.argsIgnorePattern.test(def.name.name)
-					) {
-						continue;
-					}
-
-					// if "args" option is "after-used", skip used variables
-					if (
-						config.args === "after-used" &&
-						astUtils.isFunction(def.name.parent) &&
-						!isAfterLastUsedArg(variable)
-					) {
-						continue;
-					}
-				} else {
-					// skip ignored variables
-					if (
-						config.varsIgnorePattern &&
-						config.varsIgnorePattern.test(def.name.name)
 					) {
 						continue;
 					}
@@ -394,6 +349,25 @@ function hasRestSpreadSibling(variable) {
 		);
 
 		return hasRestSiblingDefinition || hasRestSiblingReference;
+	}
+
+	return false;
+}
+
+function isUnusedExpression(node) {
+	const parent = node.parent;
+
+	if (parent.type === "ExpressionStatement") {
+			return true;
+	}
+
+	if (parent.type === "SequenceExpression") {
+			const isLastExpression = parent.expressions[parent.expressions.length - 1] === node;
+
+			if (!isLastExpression) {
+					return true;
+			}
+			return isUnusedExpression(parent);
 	}
 
 	return false;

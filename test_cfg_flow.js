@@ -1,31 +1,45 @@
-const
-    CFG = require( 'ast-flow-graph' ),
-    fs = require( 'fs' ),
-    src = fs.readFileSync( './index.js', 'utf8' ),
-    cfg = new CFG( src, {
-        parser:    {
-            loc:          true,
-            range:        true,
-            comment:      true,
-            tokens:       true,
-            ecmaVersion:  9,
-            sourceType:   'module',
-            ecmaFeatures: {
-                impliedStrict: true,
-                experimentalObjectRestSpread: true
-            }
-        }
-    } );
+const CFG = require('./cfg/cfg_builder').CFG;
+const lint = require('./cfg/cfg_builder').lint;
+const fs = require('fs');
+const espree = require('espree');
+const { generate } = require('astring');
+const SourceCode = require('eslint').SourceCode
 
-cfg.generate();     // Generate a CFG for all functions (and main module)
-// or for just one function
-const graph = cfg.generate( 'my_function' );
+const code = fs.readFileSync("./easy_app/index.js", 'utf-8');
 
-// Create all graphs and then get one of them
-cfg.generate(); // You only need to do this once.
-const myFunc = cfg.by_name( 'my_function' );
-// ...
-console.log( cfg.toTable() );    // Display all functions as tables
-// Create a graph-viz .dot file
+const ast = espree.parse(code, {
+	range: true,
+	loc: true,
+	comment: true,
+	tokens: true,
+	ecmaVersion: 2022,
+	sourceType: "module",
+	ecmaFeatures: {
+		jsx: true,
+		globalReturn: true,
+		impliedStrict: true,
+	},
+});
 
-console.log( cfg.create_dot( myFunc ) );
+
+// console.log(lint(sourceCode));
+let cfg = new CFG(new SourceCode(code, ast));
+cfg.Build();
+
+console.log(cfg.codePaths[0].getObject().initialSegment.Nodes);
+// console.log(cfg.getCodePaths())
+
+// console.log(generate(espree.parse(code)))
+// console.log(typeof generate)
+cfg.DumpDot().forEach((dot, index) => {
+  // console.log(dot);
+  fs.writeFileSync(`./cfg/dot/${index}.dot`, dot, 'utf-8');
+})
+
+// console.log(cfg.getCodePaths()[0].getObject().initialSegment.allNextSegments[0].nextSegments[0].nextSegments[0]);
+
+// console.log(cfg.getUnreachableNode());
+
+
+
+
