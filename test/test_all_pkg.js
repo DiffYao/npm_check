@@ -1,13 +1,13 @@
 var rootDir = process.cwd() + "/easy_app";
 const prettyjson = require('prettyjson')
-var check = require("./get_dependence");
+var check = require("../get_dependence");
 var lodash = require("lodash");
-var parser = require("./parser/esprima");
-var requireDetector = require("./detector/requireCallExpression");
-var importDetector = require("./detector/importCallExpression");
+var parser = require("../parser/esprima");
+var requireDetector = require("../detector/requireCallExpression");
+var importDetector = require("../detector/importCallExpression");
 
 const readdirp = require("readdirp");
-const ignorer = require("./ignorer/ignorer").Init(rootDir);
+const ignorer = require("../ignorer/ignorer").Init(rootDir);
 
 var detectors = [
   requireDetector, 
