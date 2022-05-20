@@ -29,8 +29,8 @@ exports.default = async function (filename) {
 			error: null,
 		};
 	} catch (error) {
-		console.log(error);
-		console.log(filename);
+		// console.log(error);
+		// console.log(filename);
 		return {
 			error: error,
 		};
