@@ -3,8 +3,7 @@ for (let i = 0; i < 10; i++) {
 	// a = a.parse();
 	// a = 10000;
 	// console.log(a);
-	continue;
-	// a.parse("a");
+	break;
 }
 
 // bar();

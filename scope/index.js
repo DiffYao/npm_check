@@ -1,75 +1,25 @@
-/*
-  Copyright (C) 2012-2014 Yusuke Suzuki <utatane.tea@gmail.com>
-  Copyright (C) 2013 Alex Seville <hi@alexanderseville.com>
-  Copyright (C) 2014 Thiago de Arruda <tpadilha84@gmail.com>
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-  ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/**
- * Escope (<a href="http://github.com/estools/escope">escope</a>) is an <a
- * href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMAScript</a>
- * scope analyzer extracted from the <a
- * href="http://github.com/estools/esmangle">esmangle project</a/>.
- * <p>
- * <em>escope</em> finds lexical scopes in a source program, i.e. areas of that
- * program where different occurrences of the same identifier refer to the same
- * variable. With each scope the contained variables are collected, and each
- * identifier reference in code is linked to its corresponding variable (if
- * possible).
- * <p>
- * <em>escope</em> works on a syntax tree of the parsed source code which has
- * to adhere to the <a
- * href="https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API">
- * Mozilla Parser API</a>. E.g. <a href="https://github.com/eslint/espree">espree</a> is a parser
- * that produces such syntax trees.
- * <p>
- * The main interface is the {@link analyze} function.
- * @module escope
- */
-/* eslint no-underscore-dangle: ["error", { "allow": ["__currentScope"] }] */
-
 const assert = require("assert");
 
 const ScopeManager = require("./scope-manager.js").default;
 const Referencer = require("./referencer.js").default;
-const Reference = require("./reference.js");
+const Reference = require("./reference.js").default;
 const Variable = require("./variable.js").Variable;
-
 
 /**
  * Set the default options
  * @returns {Object} options
  */
 function defaultOptions() {
-    return {
-        optimistic: false,
-        directive: false,
-        nodejsScope: false,
-        impliedStrict: false,
-        sourceType: "script", // one of ['script', 'module', 'commonjs']
-        ecmaVersion: 5,
-        childVisitorKeys: null,
-        fallback: "iteration"
-    };
+	return {
+		optimistic: false,
+		directive: false,
+		nodejsScope: false,
+		impliedStrict: false,
+		sourceType: "script", // one of ['script', 'module', 'commonjs']
+		ecmaVersion: 5,
+		childVisitorKeys: null,
+		fallback: "iteration",
+	};
 }
 
 /**
@@ -79,32 +29,36 @@ function defaultOptions() {
  * @returns {Object} Updated options
  */
 function updateDeeply(target, override) {
+	/**
+	 * Is hash object
+	 * @param {Object} value Test value
+	 * @returns {boolean} Result
+	 */
+	function isHashObject(value) {
+		return (
+			typeof value === "object" &&
+			value instanceof Object &&
+			!(value instanceof Array) &&
+			!(value instanceof RegExp)
+		);
+	}
 
-    /**
-     * Is hash object
-     * @param {Object} value Test value
-     * @returns {boolean} Result
-     */
-    function isHashObject(value) {
-        return typeof value === "object" && value instanceof Object && !(value instanceof Array) && !(value instanceof RegExp);
-    }
+	for (const key in override) {
+		if (Object.prototype.hasOwnProperty.call(override, key)) {
+			const val = override[key];
 
-    for (const key in override) {
-        if (Object.prototype.hasOwnProperty.call(override, key)) {
-            const val = override[key];
-
-            if (isHashObject(val)) {
-                if (isHashObject(target[key])) {
-                    updateDeeply(target[key], val);
-                } else {
-                    target[key] = updateDeeply({}, val);
-                }
-            } else {
-                target[key] = val;
-            }
-        }
-    }
-    return target;
+			if (isHashObject(val)) {
+				if (isHashObject(target[key])) {
+					updateDeeply(target[key], val);
+				} else {
+					target[key] = updateDeeply({}, val);
+				}
+			} else {
+				target[key] = val;
+			}
+		}
+	}
+	return target;
 }
 
 /**
@@ -128,49 +82,46 @@ function updateDeeply(target, override) {
  * @returns {ScopeManager} ScopeManager
  */
 function analyze(cfgRes, providedOptions) {
-    const options = updateDeeply(defaultOptions(), providedOptions);
-    const scopeManager = new ScopeManager(options);
-    const referencer = new Referencer(options, scopeManager);
+	const options = updateDeeply(defaultOptions(), providedOptions);
+	const scopeManager = new ScopeManager(options);
+	const referencer = new Referencer(options, scopeManager);
 
-    let set = new WeakSet();
-    referencer.visit(cfgRes.ast);
-    // let cfg = cfgRes.cfg.getCodePaths().forEach(codePath => {
-    //     // traverse 都是可以抵达的节点
-    //     codePath.traverseSegments(function (segment) {
-    //         segment.ASTNodes.forEach(node => {
-    //             if (node.type === "Program" || set.has(node)) {
-    //                 return;
-    //             }
-    //             // console.log(node.loc);
-    //             set.add(node);
-    //             referencer.visit(node)
-    //         })
-    //     });
-    // });
+	// let cfg = cfgRes.cfg.getCodePaths().forEach(codePath => {
+	// traverse 都是可以抵达的节点
+	cfgRes.cfg.getCodePaths()[0].traverseSegmentsTrue(function (segment) {
+		// console.log(segment.id);
+		segment.Nodes.forEach((nodeMap) => {
+			if (!segment.reachable && !nodeMap.str.endsWith("exit")) {
+				return;
+			}
+			// console.log(nodeMap)
+			referencer.VisitNodeMap(nodeMap);
+			// console.log(type);
+		});
+	});
 
+	// referencer.visit(cfg);
 
-    referencer.close(cfgRes.ast);
-    // referencer.visit(cfg);
+	// console.log(scopeManager.__currentScope)
+	assert(scopeManager.__currentScope === null, "currentScope should be null.");
 
-    assert(scopeManager.__currentScope === null, "currentScope should be null.");
-
-    return scopeManager;
+	return scopeManager;
 }
 
 module.exports = {
-    /** @name module:escope.Reference */
-    Reference,
+	/** @name module:escope.Reference */
+	Reference,
 
-    /** @name module:escope.Variable */
-    Variable,
+	/** @name module:escope.Variable */
+	Variable,
 
-    /** @name module:escope.ScopeManager */
-    ScopeManager,
+	/** @name module:escope.ScopeManager */
+	ScopeManager,
 
-    /** @name module:escope.Referencer */
-    Referencer,
+	/** @name module:escope.Referencer */
+	Referencer,
 
-    analyze
+	analyze,
 };
 
 /** @name module:escope.Definition */

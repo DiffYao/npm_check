@@ -258,6 +258,108 @@ class CodePath {
             }
         }
     }
+
+    traverseSegmentsTrue(options, callback) {
+        let resolvedOptions;
+        let resolvedCallback;
+
+        if (typeof options === "function") {
+            resolvedCallback = options;
+            resolvedOptions = {};
+        } else {
+            resolvedOptions = options || {};
+            resolvedCallback = callback;
+        }
+
+        const startSegment = resolvedOptions.first || this.internal.initialSegment;
+        const lastSegment = resolvedOptions.last;
+
+        let item = null;
+        let index = 0;
+        let end = 0;
+        let segment = null;
+        const visited = Object.create(null);
+        const stack = [[startSegment, 0]];
+        let skippedSegment = null;
+        let broken = false;
+        const controller = {
+            skip() {
+                if (stack.length <= 1) {
+                    broken = true;
+                } else {
+                    skippedSegment = stack[stack.length - 2][0];
+                }
+            },
+            break() {
+                broken = true;
+            }
+        };
+
+        /**
+         * Checks a given previous segment has been visited.
+         * @param {CodePathSegment} prevSegment A previous segment to check.
+         * @returns {boolean} `true` if the segment has been visited.
+         */
+        function isVisited(prevSegment) {
+            return (
+                visited[prevSegment.id] ||
+                segment.isLoopedPrevSegment(prevSegment)
+            );
+        }
+
+        while (stack.length > 0) {
+            item = stack[stack.length - 1];
+            segment = item[0];
+            index = item[1];
+
+            if (index === 0) {
+
+                // Skip if this segment has been visited already.
+                if (visited[segment.id]) {
+                    stack.pop();
+                    continue;
+                }
+
+                // Skip if all previous segments have not been visited.
+                if (segment !== startSegment &&
+                    segment.prevSegments.length > 0 &&
+                    !segment.prevSegments.every(isVisited)
+                ) {
+                    stack.pop();
+                    continue;
+                }
+
+                // Reset the flag of skipping if all branches have been skipped.
+                if (skippedSegment && segment.prevSegments.indexOf(skippedSegment) !== -1) {
+                    skippedSegment = null;
+                }
+                visited[segment.id] = true;
+
+                // Call the callback when the first time.
+                if (!skippedSegment) {
+                    resolvedCallback.call(this, segment, controller);
+                    if (segment === lastSegment) {
+                        controller.skip();
+                    }
+                    if (broken) {
+                        break;
+                    }
+                }
+            }
+
+            // Update the stack.
+            end = segment.allNextSegments.length - 1;
+            if (index < end) {
+                item[1] += 1;
+                stack.push([segment.allNextSegments[index], 0]);
+            } else if (index === end) {
+                item[0] = segment.allNextSegments[index];
+                item[1] = 0;
+            } else {
+                stack.pop();
+            }
+        }
+    }
 }
 
 module.exports = CodePath;

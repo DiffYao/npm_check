@@ -81,7 +81,11 @@ module.exports = {
 	 */
 	dumpState: !debug.enabled
 		? debug
-		: /* istanbul ignore next */ function (node, state, leaving) {
+		: function (node, state, leaving) {
+				// if (node.type == "BlockStatement") {
+				// 	console.log(leaving);
+				// 	console.log(state);
+				// }
 				for (let i = 0; i < state.currentSegments.length; ++i) {
 					const segInternal = state.currentSegments[i].internal;
 					let str;

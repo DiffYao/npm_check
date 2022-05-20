@@ -422,7 +422,7 @@ function processCodePathToEnter(analyzer, node) {
             onLooped: analyzer.onLooped
         });
         state = CodePath.getState(codePath);
-
+        node.parentCodePath = codePath;
         // Emits onCodePathStart events.
         debug.dump(`onCodePathStart ${codePath.id}`);
         analyzer.emitter.emit("onCodePathStart", codePath, node);

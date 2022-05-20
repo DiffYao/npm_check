@@ -1,5 +1,7 @@
-var a = require("acorn");
-var b = require("http");
-if (a > 10) {
-  let c = 10;
+for (let i = 0; i < 10; ++i) {
+  foo();
+  if (b) {
+      break;
+  }
+  bar();
 }

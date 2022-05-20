@@ -29,7 +29,7 @@
     "escape-string-regexp": "^5.0.0",
     "esgraph": "^0.3.0",
     "eslint": "^8.15.0",
-    "eslint-scope": "^7.1.1",
+    "eslint-scope": "file:../eslint-scope",
     "eslint-visitor-keys": "^3.3.0",
     "espree": "^9.3.1",
     "esprima": "^4.0.1",

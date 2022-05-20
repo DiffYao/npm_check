@@ -1,40 +1,11 @@
-/**
- * @fileoverview Checks for unreachable code due to return, throws, break, and continue.
- * @author Joel Feenstra
- */
-"use strict";
-
-//------------------------------------------------------------------------------
-// Helpers
-//------------------------------------------------------------------------------
-
-/**
- * @typedef {Object} ConstructorInfo
- * @property {ConstructorInfo | null} upper Info about the constructor that encloses this constructor.
- * @property {boolean} hasSuperCall The flag about having `super()` expressions.
- */
-
-/**
- * Checks whether or not a given variable declarator has the initializer.
- * @param {ASTNode} node A VariableDeclarator node to check.
- * @returns {boolean} `true` if the node has the initializer.
- */
 function isInitialized(node) {
 	return Boolean(node.init);
 }
 
-/**
- * Checks whether or not a given code path segment is unreachable.
- * @param {CodePathSegment} segment A CodePathSegment to check.
- * @returns {boolean} `true` if the segment is unreachable.
- */
 function isUnreachable(segment) {
 	return !segment.reachable;
 }
 
-/**
- * The class to distinguish consecutive unreachable statements.
- */
 class ConsecutiveRange {
 	constructor(sourceCode) {
 		this.sourceCode = sourceCode;
@@ -42,10 +13,7 @@ class ConsecutiveRange {
 		this.endNode = null;
 	}
 
-	/**
-	 * The location object of this range.
-	 * @type {Object}
-	 */
+	
 	get location() {
 		return {
 			start: this.startNode.loc.start,
@@ -53,19 +21,12 @@ class ConsecutiveRange {
 		};
 	}
 
-	/**
-	 * `true` if this range is empty.
-	 * @type {boolean}
-	 */
+	
 	get isEmpty() {
 		return !(this.startNode && this.endNode);
 	}
 
-	/**
-	 * Checks whether the given node is inside of this range.
-	 * @param {ASTNode|Token} node The node to check.
-	 * @returns {boolean} `true` if the node is inside of this range.
-	 */
+	
 	contains(node) {
 		return (
 			node.range[0] >= this.startNode.range[0] &&
@@ -73,39 +34,20 @@ class ConsecutiveRange {
 		);
 	}
 
-	/**
-	 * Checks whether the given node is consecutive to this range.
-	 * @param {ASTNode} node The node to check.
-	 * @returns {boolean} `true` if the node is consecutive to this range.
-	 */
+	
 	isConsecutive(node) {
 		return this.contains(this.sourceCode.getTokenBefore(node));
 	}
 
-	/**
-	 * Merges the given node to this range.
-	 * @param {ASTNode} node The node to merge.
-	 * @returns {void}
-	 */
 	merge(node) {
 		this.endNode = node;
 	}
 
-	/**
-	 * Resets this range by the given node or null.
-	 * @param {ASTNode|null} node The node to reset, or null.
-	 * @returns {void}
-	 */
 	reset(node) {
 		this.startNode = this.endNode = node;
 	}
 }
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
-/** @type {import('../shared/types').Rule} */
 module.exports = {
 	meta: {
 		type: "problem",
@@ -122,17 +64,10 @@ module.exports = {
 	create(context) {
 		let currentCodePath = null;
 
-		/** @type {ConstructorInfo | null} */
 		let constructorInfo = null;
 
-		/** @type {ConsecutiveRange} */
 		const range = new ConsecutiveRange(context.getSourceCode());
 
-		/**
-		 * Reports a given node if it's unreachable.
-		 * @param {ASTNode} node A statement node to report.
-		 * @returns {void}
-		 */
 		function reportIfUnreachable(node) {
 			let nextNode = null;
 			if (

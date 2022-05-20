@@ -1,0 +1,10 @@
+
+digraph {
+node[shape=box,style="rounded,filled",fillcolor=white];
+initial[label="",shape=circle,style=filled,fillcolor=black,width=0.25,height=0.25];
+final[label="",shape=doublecircle,style=filled,fillcolor=black,width=0.25,height=0.25];
+s2_1[label="FunctionExpression:enter\nIdentifier (createConnection)\nIdentifier (config)\nBlockStatement:enter\nReturnStatement:enter\nIdentifier (config)\nReturnStatement:exit"];
+s2_2[style="rounded,dashed,filled",fillcolor="#FF9800",label="<<unreachable>>\nBlockStatement:exit\nFunctionExpression:exit"];
+initial->s2_1->s2_2;
+s2_1->final;
+}

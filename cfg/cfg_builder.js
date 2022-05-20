@@ -3,7 +3,7 @@ const CodePathAnalyzer = require("./code-path-analysis/code-path-analyzer");
 const NodeEventGenerator = require("./node-event-generator");
 const estraverse = require("estraverse");
 const createEmitter = require("./safe-emitter");
-const no_unreachable_code = require("./no-unreachable");
+const no_unreachable_code = require("../detectorV2/no-unreachable");
 const vk = require("eslint-visitor-keys");
 
 class CFG {

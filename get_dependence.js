@@ -6,7 +6,11 @@ const DFG = require("./analyser/dfa_analyse");
 exports.getDependence = async function (filename) {
 	// ast 分析的结果
 	let astAnalyseRes = await AST.analyse(filename);
-	
+	if (astAnalyseRes.error) {
+		return {
+			invalidFiles: [filename],
+		}
+	}
 	// 构建cfg
 	let cfgAnalyseRes = CFG.analyse(astAnalyseRes);
 

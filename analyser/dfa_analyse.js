@@ -1,10 +1,10 @@
-const eslintScope = require("eslint-scope");
+const eslintScope = require("../scope/index");
 const evk = require("eslint-visitor-keys");
 const novar = require("../detectorV2/no-unused-vars");
 const lodash = require("lodash");
 
 function analyse(analyseRes) {
-	const scopeManager = eslintScope.analyze(analyseRes.ast, {
+	const scopeManager = eslintScope.analyze(analyseRes, {
 		optimistic: true,
 		ignoreEval: true,
 		nodejsScope: true,

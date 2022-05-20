@@ -5,9 +5,9 @@ config = {
 };
 
 exports.isUsedVariable = function(variable){
-	return ! (!isUsedVariable(variable) &&
-	!isExported(variable) &&
-	!hasRestSpreadSibling(variable));
+	return isUsedVariable(variable) ||
+	isExported(variable) ||
+	hasRestSpreadSibling(variable);
 }
 
 exports.collectUnusedVariables = function collectUnusedVariables(
@@ -116,6 +116,10 @@ function isUsedVariable(variable) {
 		const forItself = isReadForItself(ref, rhsNode);
 
 		rhsNode = getRhsNode(ref, rhsNode);
+
+		// console.log('ref: ' + isReadRef(ref));
+		// console.log(ref.flag);
+		// console.log(ref.flag & 0x1);
 
 		return (
 			isReadRef(ref) &&

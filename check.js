@@ -37,7 +37,6 @@ exports.checkProject = function (rootDir) {
 					results.reduce(
 						(obj, current) => ({
 							using: mergeBuckets(obj.using, current.using || {}),
-							trulyUsing: mergeBuckets(obj.trulyUsing, current.trulyUsing || {}),
 							invalidFiles: Object.assign(
 								obj.invalidFiles,
 								current.invalidFiles
