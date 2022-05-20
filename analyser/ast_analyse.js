@@ -8,6 +8,7 @@ const detectors = [
 	require("../detector/importCallExpression"),
 	require("../detector/importDeclaration"),
 	require("../detector/requireResolveCallExpression"),
+	require("../detector/exportDeclaration"),
 ];
 
 exports.func = async function (filename) {
@@ -15,6 +16,7 @@ exports.func = async function (filename) {
 
 	let astTreeRes = await parser(filename);
 	if (astTreeRes.error) {
+		console.log(astTreeRes.error);
 		return {
 			error: astTreeRes.error,
 		};
@@ -27,7 +29,7 @@ exports.func = async function (filename) {
 			if (detectRes.length == 0) {
 				return;
 			}
-			
+
 			detectRes.forEach((res) => {
 				importDepInfo.push({
 					name: requirePackageName(res),

@@ -1,14 +1,14 @@
-const AST = require("./analyser/ast_analyse");
-const CFG = require("./analyser/cfg_analyse");
-const DFG = require("./analyser/dfa_analyse");
+const AST = require("../analyser/ast_analyse");
+const CFG = require("../analyser/cfg_analyse");
+const DFG = require("../analyser/dfa_analyse");
 // const eslintScope = require("./scope/index");
 const eslintScope = require("eslint-scope");
 const evk = require("eslint-visitor-keys");
 const fs = require('fs');
-const novar = require('./detectorV2/no-unused-vars');
+const novar = require('../detectorV2/no-unused-vars');
 
 async function test() {
-	filename = "/Users/diffyao/Code/node_learn/npm_check/easy_app/index5.js";
+	filename = "/Users/diffyao/Code/node_learn/npm_check/easy_app/index9.js";
 
 	let astAnalyseRes = await AST.analyse(filename);
 

@@ -96,6 +96,7 @@ class Importer extends esrecurse.Visitor {
 			this.visitImport(local, node);
 		}
 	}
+
 }
 
 function getKey(node) {
@@ -122,19 +123,28 @@ class Referencer extends esrecurse.Visitor {
 				? nodeMap.str
 				: nodeMap.node.type;
 		nodeMap.node.specialType = type;
+		let node = nodeMap.node;
 
-		if (this.lock && !type.startsWith(this.unlockNode)) {
+		if (this.lock && (type + nodeMap.node.range !== this.unlockNode)) {
 			// console.log("skip " + type);
 			return;
 		}
 
+
+		if (this.set.has(getKey(nodeMap.node))) {
+			// console.log("duplicate " + type);
+			return;
+		}
+		this.set.add(getKey(nodeMap.node));
+
+		if (node.type === 'Identifier' && node.parent && node.parent.id === node) {
+			// console.log("dec skip :" + type);
+			return;
+		}
+
+
 		// console.log(type);
 		if (this.__visitor[type]) {
-			if (this.set.has(getKey(nodeMap.node))) {
-				console.log("duplicate " + type);
-				return;
-			}
-			this.set.add(getKey(nodeMap.node));
 			this.__visitor[type].call(this, nodeMap.node);
 			return;
 		}
@@ -166,12 +176,14 @@ class Referencer extends esrecurse.Visitor {
 
 	Lock(node) {
 		this.lock = true;
-		this.unlockNode = node.type + ":exit";
+		this.unlockNode = node.type + ":exit"+ node.range;
 	}
 
 	unLock(node) {
-		this.lock = false;
-		this.unlockNode = "temp";
+		if (node.specialType + node.range === this.unlockNode || this.unlockNode === "temp") {
+			this.lock = false;
+			this.unlockNode = "temp";
+		}
 	}
 
 	close(node) {
@@ -351,6 +363,23 @@ class Referencer extends esrecurse.Visitor {
 		if (isMethodDefinition) {
 			this.popInnerMethodDefinition(previous);
 		}
+	}
+
+	visitImport(id, specifier) {
+		this.visitPattern(id, (pattern) => {
+			this.currentScope()
+				.__define(
+					pattern,
+					new Definition(
+						Variable.ImportBinding,
+						pattern,
+						specifier,
+						this.declaration,
+						null,
+						null
+					)
+				);
+		});
 	}
 
 	visitForIn(node) {
@@ -670,7 +699,7 @@ class Referencer extends esrecurse.Visitor {
 	}
 
 	"VariableDeclaration:enter"(node) {
-		this.Lock(node);
+		// this.Lock(node);
 		const variableTargetScope =
 			node.kind === "var"
 				? this.currentScope().variableScope
@@ -685,9 +714,9 @@ class Referencer extends esrecurse.Visitor {
 				node,
 				i
 			);
-			if (decl.init) {
-				this.Visit(decl.init);
-			}
+			// if (decl.init) {
+			// 	this.Visit(decl.init);
+			// }
 		}
 	}
 
@@ -787,6 +816,19 @@ class Referencer extends esrecurse.Visitor {
 		this.visitForIn(node);
 	}
 
+
+	"ImportDeclaration:enter"(node) {
+		this.Lock(node)
+		const importer = new Importer(node, this);
+		importer.visit(node);
+	}
+
+	"ImportDeclaration:exit"(node) {
+		this.unLock(node)
+		const importer = new Importer(node, this);
+		importer.visit(node);
+	}
+
 	ImportDeclaration(node) {
 		assert(
 			this.scopeManager.__isES6() && this.scopeManager.isModule(),
@@ -799,13 +841,13 @@ class Referencer extends esrecurse.Visitor {
 	}
 
 	visitExportDeclaration(node) {
-		if (node.source) {
-			return;
-		}
-		if (node.declaration) {
-			this.Visit(node.declaration);
-			return;
-		}
+		// if (node.source) {
+		// 	return;
+		// }
+		// if (node.declaration) {
+		// 	this.Visit(node.declaration);
+		// 	return;
+		// }
 
 		// this.visit2Children(node);
 	}
@@ -828,16 +870,17 @@ class Referencer extends esrecurse.Visitor {
 	}
 
 	ExportSpecifier(node) {
-		// TODO: `node.id` doesn't exist. for bc?
 		const local = node.id || node.local;
 
-		this.Visit(local);
+		// this.Visit(local);
 	}
 
 	MetaProperty() {
 		// eslint-disable-line class-methods-use-this
 		// do nothing.
 	}
+
+	
 }
 
 exports.default = Referencer;

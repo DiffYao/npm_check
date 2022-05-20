@@ -1,11 +1,11 @@
-const CFG = require('./cfg/cfg_builder').CFG;
-const lint = require('./cfg/cfg_builder').lint;
+const CFG = require('../cfg/cfg_builder').CFG;
+const lint = require('../cfg/cfg_builder').lint;
 const fs = require('fs');
 const espree = require('espree');
 const { generate } = require('astring');
 const SourceCode = require('eslint').SourceCode
 
-const code = fs.readFileSync("./easy_app/index5.js", 'utf-8');
+const code = fs.readFileSync("./easy_app/index9.js", 'utf-8');
 
 const ast = espree.parse(code, {
 	range: true,

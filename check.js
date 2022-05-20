@@ -1,6 +1,7 @@
 const readdirp = require("readdirp");
 const check = require("./get_dependence");
 const lodash = require("lodash");
+const path = require("path");
 
 exports.checkProject = function (rootDir) {
 	return new Promise((resolve) => {
@@ -8,7 +9,7 @@ exports.checkProject = function (rootDir) {
 		
 		// 获取所有待处理文件，过滤一些无用文件
 		const finder = readdirp(rootDir, {
-			fileFilter: ["*.js", "*.mjs", "*.js"],
+			fileFilter: ["*.js", "*.mjs", "*.cjs"],
 			directoryFilter: (entry) =>
 				!ignorer.ignores(entry.path) && !isModule(entry.fullPath),
 		});
@@ -57,7 +58,7 @@ exports.checkProject = function (rootDir) {
 
 function isModule(dir) {
 	try {
-		readJSON(path.resolve(dir, "package.json"));
+		require(path.resolve(dir, "package.json"));
 		return true;
 	} catch (error) {
 		return false;

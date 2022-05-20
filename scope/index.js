@@ -102,7 +102,7 @@ function analyze(cfgRes, providedOptions) {
 
 	// referencer.visit(cfg);
 
-	// console.log(scopeManager.__currentScope)
+	// console.log(scopeManager.__currentScope.block);
 	assert(scopeManager.__currentScope === null, "currentScope should be null.");
 
 	return scopeManager;

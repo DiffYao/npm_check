@@ -2,7 +2,7 @@ function loadClass(className) {
   // This uses a switch for static require analysis
   switch (className) {
     case 'Connection':
-      Class = require('./lib/Connection');
+      Class = require('esprima');
       break;
     default:
       throw new Error('Cannot find class \'' + className + '\'');

@@ -16,7 +16,7 @@ exports.default = async function (filename) {
 				loc: true,
 				comment: true,
 				tokens: true,
-				ecmaVersion: 2022,
+				ecmaVersion: 2019,
 				sourceType: "module",
 				ecmaFeatures: {
 					jsx: true,

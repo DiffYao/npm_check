@@ -1,10 +1,10 @@
-const eslintScope = require("../scope/index");
+const scope = require("../scope/index");
 const evk = require("eslint-visitor-keys");
 const novar = require("../detectorV2/no-unused-vars");
 const lodash = require("lodash");
 
 function analyse(analyseRes) {
-	const scopeManager = eslintScope.analyze(analyseRes, {
+	const scopeManager = scope.analyze(analyseRes, {
 		optimistic: true,
 		ignoreEval: true,
 		nodejsScope: true,
@@ -30,7 +30,7 @@ function analyse(analyseRes) {
 					isUsed = true;
 				}
 			});
-		} else if (node.type == "ImportDeclaration") {
+		} else if (node.type == "ImportDeclaration" && node.specifiers.length > 0) {  // 忽略import的specifiers =[] 隐式调用
 			isUsed = false;
 			scopeManager.getDeclaredVariables(node).forEach((v) => {
 				if (novar.isUsedVariable(v)) {

@@ -3,8 +3,6 @@ const lodash = require("lodash");
 const getDefinedPkg = require("./get_defined_pkg");
 
 exports.check = function (rootDir) {
-
-
 	// 获取定义的package
 	var dep = getDefinedPkg.getDeps(rootDir);
 
