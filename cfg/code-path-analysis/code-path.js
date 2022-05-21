@@ -432,7 +432,9 @@ class CodePath {
 
 			segment.allNextSegments.forEach((nextSegment) => {
 				// 如果循环
-				if (dominartorTree[nextSegment.id] && dominartorTree[nextSegment.id].loopDepth > 0) {
+				if (dominartorTree[nextSegment.id] 
+					&& dominartorTree[nextSegment.id].loopDepth > 0
+					&& !latetraverse.includes(nextSegment)) {
 					latetraverse.push(nextSegment);
 				}
 			});
