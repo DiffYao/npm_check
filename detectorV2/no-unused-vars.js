@@ -184,32 +184,6 @@ function isReadForItself(ref, rhsNode) {
 	);
 }
 
-/**
- * Checks whether a given reference is a read to update itself or not.
- * @param {eslint-scope.Reference} ref A reference to check.
- * @param {ASTNode} rhsNode The RHS node of the previous assignment.
- * @returns {boolean} The reference is a read to update itself.
- * @private
- */
-function isReadForItself(ref, rhsNode) {
-	const id = ref.identifier;
-	const parent = id.parent;
-	return (
-		ref.isRead() &&
-		// self update. e.g. `a += 1`, `a++`
-		((parent &&
-			parent.type === "AssignmentExpression" &&
-			parent.left === id &&
-			isUnusedExpression(parent)) ||
-			(parent &&
-				parent.type === "UpdateExpression" &&
-				isUnusedExpression(parent)) ||
-			// in RHS of an assignment for itself. e.g. `a = a + 1`
-			(rhsNode &&
-				isInside(id, rhsNode) &&
-				!isInsideOfStorableFunction(id, rhsNode)))
-	);
-}
 
 /**
  * Determine if an identifier is used either in for-in loops.

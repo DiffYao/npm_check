@@ -49,31 +49,3 @@ exports.getNodes = function (flowProgram) {
 	return;
 };
 
-function recursive(flowProgram, node, visited) {
-	if (!node || hasVisited(node, visited)) {
-		return;
-	}
-
-	visited.add(node);
-
-	for (let i = 0; i < node.outgoingEdges.length; i++) {
-		let edge = node.outgoingEdges[i];
-
-		// 使用 func替代
-		if (edge.label.indexOf("$$func") >= 0) {
-			let func = "$$func" + edge.label.split("$$func")[1].split(")")[0];
-			flow2 = flowProgram.funcMap[func];
-
-			GetNextNode(flowProgram, flow2.flowGraph.entry, visited);
-			continue;
-		}
-
-		if (edge.data) {
-			// console.log(edge.data)
-			flowProgram.nodes.push(edge.node);
-		}
-
-		GetNextNode(flowProgram, edge.target, visited);
-    return;
-	}
-}
