@@ -182,7 +182,6 @@ function makeLooped(state, unflattenedFromSegments, unflattenedToSegments) {
         if (toSegment.allPrevSegments.length >= 2) {
             CodePathSegment.markPrevSegmentAsLooped(toSegment, fromSegment);
         }
-
         state.notifyLooped(fromSegment, toSegment);
     }
 }

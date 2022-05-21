@@ -376,3 +376,59 @@ function isUnusedExpression(node) {
 
 	return false;
 }
+
+function isInside(inner, outer) {
+	return (
+			inner.range[0] >= outer.range[0] &&
+			inner.range[1] <= outer.range[1]
+	);
+}
+
+function isInsideOfStorableFunction(id, rhsNode) {
+	const funcNode = astUtils.getUpperFunction(id);
+
+	return (
+			funcNode &&
+			isInside(funcNode, rhsNode) &&
+			isStorableFunction(funcNode, rhsNode)
+	);
+}
+
+function isStorableFunction(funcNode, rhsNode) {
+	let node = funcNode;
+	let parent = funcNode.parent;
+
+	while (parent && isInside(parent, rhsNode)) {
+			switch (parent.type) {
+					case "SequenceExpression":
+							if (parent.expressions[parent.expressions.length - 1] !== node) {
+									return false;
+							}
+							break;
+
+					case "CallExpression":
+					case "NewExpression":
+							return parent.callee !== node;
+
+					case "AssignmentExpression":
+					case "TaggedTemplateExpression":
+					case "YieldExpression":
+							return true;
+
+					default:
+							if (/(?:Statement|Declaration)$/u.test(parent.type)) {
+
+									/*
+									 * If it encountered statements, this is a complex pattern.
+									 * Since analyzing complex patterns is hard, this returns `true` to avoid false positive.
+									 */
+									return true;
+							}
+			}
+
+			node = parent;
+			parent = parent.parent;
+	}
+
+	return false;
+}

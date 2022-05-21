@@ -86,10 +86,30 @@ function analyze(cfgRes, providedOptions) {
 	const scopeManager = new ScopeManager(options);
 	const referencer = new Referencer(options, scopeManager);
 
-	// let cfg = cfgRes.cfg.getCodePaths().forEach(codePath => {
-	// traverse 都是可以抵达的节点
-	cfgRes.cfg.getCodePaths()[0].traverseSegmentsTrue(function (segment) {
-		// console.log(segment.id);
+	cfgRes.cfg.getCodePaths()[0].traverse(function (segment) {
+		segment.Nodes.forEach((nodeMap) => {
+			if (!segment.reachable && !nodeMap.str.endsWith("exit")) {
+				return;
+			}
+			referencer.VisitNodeMap(nodeMap);
+		});
+	});
+
+	if (scopeManager.__currentScope !== null) {
+		return analyseFalse(cfgRes, providedOptions);
+	}
+
+	// assert(scopeManager.__currentScope === null, "currentScope should be null.");
+	return scopeManager;
+}
+
+function analyseFalse(cfgRes, providedOptions) {
+	const options = updateDeeply(defaultOptions(), providedOptions);
+	const scopeManager = new ScopeManager(options);
+	const referencer = new Referencer(options, scopeManager);
+
+	cfgRes.cfg.getCodePaths()[0].changeTraverse();
+	cfgRes.cfg.getCodePaths()[0].traverse(function (segment) {
 		segment.Nodes.forEach((nodeMap) => {
 			if (!segment.reachable && !nodeMap.str.endsWith("exit")) {
 				return;
@@ -99,11 +119,6 @@ function analyze(cfgRes, providedOptions) {
 			// console.log(type);
 		});
 	});
-
-	// referencer.visit(cfg);
-
-	// console.log(scopeManager.__currentScope.block);
-	assert(scopeManager.__currentScope === null, "currentScope should be null.");
 
 	return scopeManager;
 }

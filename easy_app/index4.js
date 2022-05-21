@@ -1,7 +1,7 @@
 for (let i = 0; i < 10; ++i) {
-  foo();
+  a = 10;
   if (b) {
       break;
   }
-  bar();
+  a = 11;
 }

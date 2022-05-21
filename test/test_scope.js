@@ -8,7 +8,7 @@ const fs = require('fs');
 const novar = require('../detectorV2/no-unused-vars');
 
 async function test() {
-	filename = "/Users/diffyao/Code/node_learn/npm_check/easy_app/index9.js";
+	filename = "/Users/diffyao/Code/node_learn/npm_check/easy_app/index11.js";
 
 	let astAnalyseRes = await AST.analyse(filename);
 
@@ -28,7 +28,7 @@ async function test() {
 		childVisitorKeys: evk.KEYS,
 		fallback: evk.getKeys,
 	});
-
+	
 
 	// console.log(cfgAnalyseRes.importDepInfo);
 	// console.log(cfgAnalyseRes.cfg.getCodePaths());

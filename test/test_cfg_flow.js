@@ -5,7 +5,7 @@ const espree = require('espree');
 const { generate } = require('astring');
 const SourceCode = require('eslint').SourceCode
 
-const code = fs.readFileSync("./easy_app/index9.js", 'utf-8');
+const code = fs.readFileSync("./easy_app/index11.js", 'utf-8');
 
 const ast = espree.parse(code, {
 	range: true,
@@ -27,8 +27,8 @@ let cfg = new CFG(new SourceCode(code, ast));
 cfg.Build();
 
 // console.log(cfg.codePaths[0].getObject().initialSegment.Nodes);
-console.log(cfg.getCodePaths())
-console.log(cfg.getCodePaths()[0].getObject())
+// console.log(cfg.getCodePaths())
+// console.log(cfg.getCodePaths()[0].getObject())
 
 // console.log(generate(espree.parse(code)))
 // console.log(typeof generate)

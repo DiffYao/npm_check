@@ -142,7 +142,6 @@ class Referencer extends esrecurse.Visitor {
 			return;
 		}
 
-
 		// console.log(type);
 		if (this.__visitor[type]) {
 			this.__visitor[type].call(this, nodeMap.node);
@@ -670,8 +669,23 @@ class Referencer extends esrecurse.Visitor {
 			// let / const should be enclosed into it. Only VariableDeclaration affects on the caller's environment.
 			this.currentScope().variableScope.__detectEval();
 		}
+		this.visitChildren(node);
+	}
+
+	"CallExpression:enter"(node) {
+		// Check this is direct call to eval
+		if (
+			!this.scopeManager.__ignoreEval() &&
+			node.callee.type === Syntax.Identifier &&
+			node.callee.name === "eval"
+		) {
+			// NOTE: This should be `variableScope`. Since direct eval call always creates Lexical environment and
+			// let / const should be enclosed into it. Only VariableDeclaration affects on the caller's environment.
+			this.currentScope().variableScope.__detectEval();
+		}
 		// this.visit2Children(node);
 	}
+
 
 	"BlockStatement:enter"(node) {
 		if (this.scopeManager.__isES6()) {
@@ -681,6 +695,15 @@ class Referencer extends esrecurse.Visitor {
 		// this.visit2Children(node);
 
 		// this.close(node2);
+	}
+
+	BlockStatement(node) {
+		if (this.scopeManager.__isES6()) {
+			this.scopeManager.__nestBlockScope(node);
+		}
+
+		this.visitChildren(node);
+		this.close(node);
 	}
 
 	ThisExpression() {
@@ -782,7 +805,7 @@ class Referencer extends esrecurse.Visitor {
 	visitNewCodePath(node) {
 		let temp = this;
 		// console.log("new code path");
-		node.parentCodePath.traverseSegmentsTrue(function (segment) {
+		node.parentCodePath.traverse(function (segment) {
 			segment.Nodes.forEach((nodeMap) => {
 				if (!segment.reachable && !nodeMap.str.endsWith("exit")) {
 					return;

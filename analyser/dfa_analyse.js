@@ -4,6 +4,7 @@ const novar = require("../detectorV2/no-unused-vars");
 const lodash = require("lodash");
 
 function analyse(analyseRes) {
+	// console.log(analyseRes.filename);
 	const scopeManager = scope.analyze(analyseRes, {
 		optimistic: true,
 		ignoreEval: true,
