@@ -425,7 +425,7 @@ class CodePath {
 
 			segment.allNextSegments.forEach((nextSegment) => {
 				// 如果支配
-				if (!visited.has(nextSegment) && dominartorTree[nextSegment.id] && dominartorTree[segment.id] && dominartorTree[nextSegment.id].dominates(dominartorTree[segment.id])) {
+				if (!visited.has(nextSegment.id) && dominartorTree[nextSegment.id] && dominartorTree[segment.id] && dominartorTree[nextSegment.id].dominates(dominartorTree[segment.id])) {
 					latetraverse.push(nextSegment);
 				}
 			});
@@ -438,7 +438,7 @@ class CodePath {
 			});
 
 			segment.allNextSegments.forEach((nextSegment) => {
-				if (!visited.has(nextSegment) && !latetraverse.includes(nextSegment)) {
+				if (!visited.has(nextSegment.id) && !latetraverse.includes(nextSegment)) {
 					latetraverse.push(nextSegment);
 				}
 			});
