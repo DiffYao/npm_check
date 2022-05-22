@@ -33,6 +33,5 @@ function recursive(ast, visited) {
 }
 
 exports.getNodes = function (ast) {
-  const visited = new WeakSet();
-  return recursive(ast, visited);
+  return recursive(ast, new WeakSet());
 }

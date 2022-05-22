@@ -1,1 +1,0 @@
-var wala2 = require("wala")

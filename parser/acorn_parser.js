@@ -1,13 +1,16 @@
 var acorn = require("acorn");
-var parser = require("esprima");
+var babel = require("@babel/parser");
 var file = require("../util/file");
 var jsx = require("acorn-jsx");
 
 exports.default = async function (filename) {
   const content = await file.getContent(filename);
+  var JSXParser = acorn.Parser.extend(jsx());
   try {
-    return parser.parseModule(content, {
-        jsx: true
+    return JSXParser.parse(content, {
+      sourceType: "module",
+      ecmaVersion: "latest",
+      allowHashBang: true,
     });
   } catch (error) {
     console.log(error);

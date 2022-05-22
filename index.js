@@ -1,7 +1,7 @@
 var getDefinedPkg = require("./get_defined_pkg");
 var dev = require("./get_dependence");
 var lodash = require("lodash");
-var parser = require("./parser/esprima");
+var parser = require("./parser/parser");
 var requireDetector = require("./detector/requireCallExpression");
 var importDetector = require("./detector/importCallExpression");
 
@@ -11,7 +11,6 @@ fileName = rootDir + "/index.js";
 
 depDefined = getDefinedPkg.getDeps(rootDir);
 console.log("package.json中声明的 pkg");
-console.log(depDefined);
 
 detectors = [
   requireDetector, 

@@ -1,53 +1,34 @@
-var lodash = require("lodash");
-var ast = require("./util/parser");
-var requirePackageName = require("require-package-name")
-var isCoreModule = require("is-core-module")
+const lodash = require("lodash");
+const AST = require("./analyser/ast_analyse");
+const CFG = require("./analyser/cfg_analyse");
+const DFG = require("./analyser/dfa_analyse");
 
-exports.getDeclaredPkg = async function (filename, dir, deps, parser, detector) {
-  const result = await parser(filename)
-  return lodash(ast.getNodes(result))
-    .map((node) => detect(detector, node, deps))
-    .flatten()
-    .uniq()
-    .map(requirePackageName) // 获取dep实际的名字
-    .filter((pkg) => !isCoreModule(pkg))// 去除系统自带依赖
-    .value();
+exports.getDependence = async function (filename) {
+	// ast 分析的结果
+	let astAnalyseRes = await AST.analyse(filename);
+	if (astAnalyseRes.error) {
+		return {
+			invalidFiles: {
+				[filename]: astAnalyseRes.error,
+			},
+		};
+	}
+	// 构建cfg
+	let cfgAnalyseRes = CFG.analyse(astAnalyseRes);
+
+	// console.log(analyseRes);
+	// console.log(lodash(cfgAnalyseRes).map('name').value());
+	let usingDep = lodash(DFG.analyse(cfgAnalyseRes)).map("name").value();
+	// console.log(usingDep);
+
+	// console.log(filename + "   " + usingDep);
+
+	return {
+		using: {
+			[filename]: usingDep,
+		},
+		trulyUsing: {
+			[filename]: [],
+		},
+	};
 };
-
-exports.getDependence = async function (filename, deps, parser, detectors) {
-  const result = await parser(filename)
-  usingDep = lodash(ast.getNodes(result))
-    .map((node) => detect(detectors, node, deps))
-    .flatten()
-    .uniq()
-    .map(requirePackageName) // 获取dep实际的名字
-    .filter((pkg) => !isCoreModule(pkg))// 去除系统自带依赖
-    .value();
-
-  return {
-    using: {
-      [filename]: usingDep
-    }
-  };
-}
-
-// function detect(detector, node, deps) {
-//   try {
-//     return detector(node, deps);
-//   } catch (error) {
-//     console.log(error)
-//     return [];
-//   }
-//   return [];
-// }
-
-function detect(detectors, node, deps) {
-  return lodash(detectors).map(detector => {
-    try {
-      return detector(node, deps);
-    } catch (error) {
-      return [];
-    }
-  }).flatten().value();
-}
-

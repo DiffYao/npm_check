@@ -2,6 +2,7 @@ var http2 = require('http');
 var fs = require('fs');
 var cats = require('cat-ascii-faces');
 var uuidv4 = require('uuid/v4');
+require("json");
 var digit = 10
 
 http2.createServer(function (req, res) {
@@ -25,7 +26,5 @@ http2.createServer(function (req, res) {
       res.end('Hello ' + name + '\n');
    }
 }).listen(8124);
-cats();
 uuidv4(); 
 console.log('Server running at port 8124/');
-require('url').parse(req.url, true);

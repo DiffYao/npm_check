@@ -1,0 +1,35 @@
+
+digraph {
+node[shape=box,style="rounded,filled",fillcolor=white];
+initial[label="",shape=circle,style=filled,fillcolor=black,width=0.25,height=0.25];
+final[label="",shape=doublecircle,style=filled,fillcolor=black,width=0.25,height=0.25];
+s2_1[label="FunctionDeclaration:enter\nIdentifier (_checkDone)\nBlockStatement:enter\nIfStatement:enter\nMemberExpression:enter\nThisExpression\nIdentifier (destroyed)\nMemberExpression:exit"];
+s2_2[label="ReturnStatement"];
+s2_3[style="rounded,dashed,filled",fillcolor="#FF9800",label="<<unreachable>>\n????"];
+s2_4[label="IfStatement:exit\nForOfStatement:enter"];
+s2_6[label="MemberExpression:enter\nThisExpression\nIdentifier (_selections)\nMemberExpression:exit"];
+s2_5[label="VariableDeclaration:enter\nVariableDeclarator:enter\nIdentifier (selection)\nVariableDeclarator:exit\nVariableDeclaration:exit"];
+s2_7[label="BlockStatement:enter\nForStatement:enter\nVariableDeclaration:enter\nVariableDeclarator:enter\nIdentifier (piece)\nMemberExpression:enter\nIdentifier (selection)\nIdentifier (from)\nMemberExpression:exit\nVariableDeclarator:exit\nVariableDeclaration:exit"];
+s2_8[label="BinaryExpression:enter\nIdentifier (piece)\nMemberExpression:enter\nIdentifier (selection)\nIdentifier (to)\nMemberExpression:exit\nBinaryExpression:exit"];
+s2_9[label="BlockStatement:enter\nIfStatement:enter\nUnaryExpression:enter\nCallExpression:enter\nMemberExpression:enter\nMemberExpression:enter\nThisExpression\nIdentifier (bitfield)\nMemberExpression:exit\nIdentifier (get)\nMemberExpression:exit\nIdentifier (piece)\nCallExpression:exit\nUnaryExpression:exit"];
+s2_11[label="BlockStatement:enter\nExpressionStatement:enter\nAssignmentExpression:enter\nIdentifier (done)\nLiteral (false)\nAssignmentExpression:exit\nExpressionStatement:exit\nBreakStatement"];
+s2_12[style="rounded,dashed,filled",fillcolor="#FF9800",label="<<unreachable>>\nBlockStatement:exit"];
+s2_13[label="IfStatement:exit\nBlockStatement:exit"];
+s2_10[label="UpdateExpression:enter\nIdentifier (piece)\nUpdateExpression:exit"];
+s2_18[label="ForOfStatement:exit\nReturnStatement:enter\nIdentifier (done)\nReturnStatement:exit"];
+s2_19[style="rounded,dashed,filled",fillcolor="#FF9800",label="<<unreachable>>\nBlockStatement:exit\nFunctionDeclaration:exit"];
+s2_14[label="ForStatement:exit\nIfStatement:enter\nUnaryExpression:enter\nIdentifier (done)\nUnaryExpression:exit"];
+s2_15[label="BreakStatement"];
+s2_16[style="rounded,dashed,filled",fillcolor="#FF9800",label="<<unreachable>>\n????"];
+s2_17[label="IfStatement:exit\nBlockStatement:exit"];
+initial->s2_1->s2_2->s2_3->s2_4->s2_6->s2_5->s2_7->s2_8->s2_9->s2_11->s2_12->s2_13->s2_10->s2_8;
+s2_1->s2_4;
+s2_6->s2_18->s2_19;
+s2_8->s2_14->s2_15->s2_16->s2_17->s2_5;
+s2_9->s2_13;
+s2_11->s2_14->s2_17;
+s2_15->s2_18;
+s2_17->s2_18;
+s2_2->final;
+s2_18->final;
+}

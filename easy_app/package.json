@@ -16,7 +16,6 @@
     "esprima": "^4.0.1",
     "json": "^11.0.0",
     "nodeunit": "^0.11.3",
-    "request": "^2.88.2",
-    "wala": "file:../JS_WALA"
+    "request": "^2.88.2"
   }
 }
