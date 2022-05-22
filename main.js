@@ -2,6 +2,14 @@ const check = require("./check");
 const lodash = require("lodash");
 const getDefinedPkg = require("./get_defined_pkg");
 
+const SpecialDeps = [
+	"babel", "bin", "commitizen", "eslint",
+	"feross-standard", "gatsby", "gulp-load-plugins",
+	"husky", "istanbul", "jest", "karma", "lint-staged",
+	"mocha", "prettier", "tslint", "ttypescript", "webpack",
+	"serverless"
+];
+
 exports.check = function (rootDir) {
 	// 获取定义的package
 	var dep = getDefinedPkg.getDeps(rootDir);
@@ -46,6 +54,7 @@ function buildResult(result, deps, devDeps) {
 
 		const missingDeps = lodash.difference(usingDeps, allDeps);
 		return lodash(missingDeps)
+			.filter((item) => !SpecialDeps.includes(item))
 			.map((missingDep) => [missingDep, usingDepsLookup[missingDep]])
 			.fromPairs()
 			.value();
@@ -61,7 +70,7 @@ function buildResult(result, deps, devDeps) {
 	})();
 
 	return {
-		DefinedButNotUsed: lodash.difference(deps, usingDeps),
+		DefinedButNotUsed: lodash.difference(lodash.difference(deps, usingDeps), SpecialDeps),
 		UsedButNotDefined: missingDepsLookup,
 		// Used: usingDepsLookup,
 		// ImportButNotTrulyUsed: notTrulyUsed,

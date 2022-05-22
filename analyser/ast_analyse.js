@@ -50,8 +50,10 @@ exports.func = async function (filename) {
 		.filter((item) => !isCoreModule(item.name)) // 去除系统自带依赖
 		.filter(
 			(item) =>
-				item.name && lodash.isString(item.name) && !item.name.startsWith(".")
-		) // 去除本地依赖
+				item.name && 
+				lodash.isString(item.name) && 
+				!item.name.startsWith(".")    // 去除本地依赖
+		) 
 		.value();
 
 	return {
