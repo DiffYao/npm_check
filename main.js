@@ -7,7 +7,7 @@ const SpecialDeps = [
 	"feross-standard", "gatsby", "gulp-load-plugins",
 	"husky", "istanbul", "jest", "karma", "lint-staged",
 	"mocha", "prettier", "tslint", "ttypescript", "webpack",
-	"serverless"
+	"serverless", "react"
 ];
 
 exports.check = function (rootDir) {
