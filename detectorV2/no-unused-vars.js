@@ -406,3 +406,9 @@ function isStorableFunction(funcNode, rhsNode) {
 
 	return false;
 }
+
+function hasRestSibling(node) {
+	return node.type === "Property" &&
+			node.parent.type === "ObjectPattern" &&
+			REST_PROPERTY_TYPE.test(node.parent.properties[node.parent.properties.length - 1].type);
+}

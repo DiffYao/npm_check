@@ -5,7 +5,7 @@ const espree = require('espree');
 const { generate } = require('astring');
 const SourceCode = require('eslint').SourceCode
 
-const code = fs.readFileSync("./easy_app/index11.js", 'utf-8');
+const code = fs.readFileSync("./easy_app/index3.js", 'utf-8');
 
 const ast = espree.parse(code, {
 	range: true,
