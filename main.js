@@ -7,7 +7,7 @@ const SpecialDeps = [
 	"feross-standard", "gatsby", "gulp-load-plugins",
 	"husky", "istanbul", "jest", "karma", "lint-staged",
 	"mocha", "prettier", "tslint", "ttypescript", "webpack",
-	"serverless", "react"
+	"serverless", "react", "bootstrap", "commander"
 ];
 
 exports.check = function (rootDir) {
@@ -16,17 +16,18 @@ exports.check = function (rootDir) {
 
 	let deps = dep.deps;
 	let devDeps = dep.devdeps;
+	let allDeps  = dep.alldeps;
 	
 	return check
 		.checkProject(rootDir)
-		.then((result) => buildResult(result, deps, devDeps))
+		.then((result) => buildResult(result, deps, devDeps, allDeps))
 		.then((res) => {
 			console.log(res);
 			return res;
 		});
 };
 
-function buildResult(result, deps, devDeps) {
+function buildResult(result, deps, devDeps, allDeps) {
 	const usingDepsLookup = lodash(result.using)
 		.toPairs()
 		.map(([file, dep]) => [dep, lodash.times(dep.length, () => file)])
@@ -50,7 +51,6 @@ function buildResult(result, deps, devDeps) {
 
 	// UsedButNotDefined
 	const missingDepsLookup = (() => {
-		const allDeps = lodash.union(deps, devDeps);
 
 		const missingDeps = lodash.difference(usingDeps, allDeps);
 		return lodash(missingDeps)

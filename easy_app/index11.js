@@ -1,14 +1,21 @@
-function _checkDone () {
-  if (this.destroyed) return
-  for (const selection of this._selections) {
-    for (let piece = selection.from; piece <= selection.to; piece++) {
-      if (!this.bitfield.get(piece)) {
-        done = false
-        break
-      }
-    }
-    if (!done) break
+var traverse = require('traverse')
+var isSecret = require('./is-secret')
+
+module.exports = function (redacted) {
+  return {
+    map: map,
+    forEach: forEach
   }
 
-  return done
+  function map (obj) {
+    return traverse(obj).map(function (val) {
+      if (isSecret.key(this.key) || isSecret.value(val)) this.update(redacted)
+    })
+  }
+
+  function forEach (obj) {
+    traverse(obj).forEach(function (val) {
+      if (isSecret.key(this.key) || isSecret.value(val)) this.update(redacted)
+    })
+  }
 }

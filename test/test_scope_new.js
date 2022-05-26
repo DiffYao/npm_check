@@ -50,13 +50,13 @@ async function test() {
   //   console.log(1);
   // })
 
-  // let vars = scopeManager.getDeclaredVariables(cfgAnalyseRes.importDepInfo[0].parent);
+  let vars = scopeManager.getDeclaredVariables(cfgAnalyseRes.importDepInfo[0].parent);
   // // console.log(vars[0].references);
 	// /// console.log(vars[0].references);
   // // console.log(vars[0].references);
-  // if (novar.isUsedVariable(vars[0])) {
-  //   console.log(22)
-  // }
+  if (novar.isUsedVariable(vars[0])) {
+    console.log(22)
+  }
 
 	// a = 1;
 	// vars[0].references.forEach(element => {

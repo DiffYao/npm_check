@@ -23,14 +23,14 @@ async function test() {
 		optimistic: true,
 		ignoreEval: true,
 		nodejsScope: true,
-		ecmaVersion: 2019,
+		ecmaVersion: 2022,
 		sourceType: "module",
 		childVisitorKeys: evk.KEYS,
 		fallback: evk.getKeys,
 	});
 	
 
-	// console.log(cfgAnalyseRes.importDepInfo);
+	console.log(cfgAnalyseRes.importDepInfo[0].name);
 	// console.log(cfgAnalyseRes.cfg.getCodePaths());
 	// console.log(scopeManager.scopes.length);
 
@@ -59,11 +59,11 @@ async function test() {
 
 	// console.log(cfgAnalyseRes.importDepInfo[0].parent);
 	
-  // let vars = scopeManager.getDeclaredVariables(cfgAnalyseRes.importDepInfo[0].node);
-  // console.log(vars[0]);
-  // if (novar.isUsedVariable(vars[0])) {
-  //   console.log(22)
-  // }
+  let vars = scopeManager.getDeclaredVariables(cfgAnalyseRes.importDepInfo[0].parent);
+  console.log(vars[0].references);
+  if (novar.isUsedVariable(vars[0])) {
+    console.log(22)
+  }
 
 	// a = 1;
 	// vars[0].references.forEach(element => {

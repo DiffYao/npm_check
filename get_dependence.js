@@ -16,7 +16,6 @@ exports.getDependence = async function (filename) {
 	// 构建cfg
 	let cfgAnalyseRes = CFG.analyse(astAnalyseRes);
 
-
 	let dfgAnalyseRes = DFG.analyse(cfgAnalyseRes);
 	// console.log(analyseRes);
 	// console.log(lodash(cfgAnalyseRes).map('name').value());
