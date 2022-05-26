@@ -533,9 +533,9 @@ function processCodePathToEnter(analyzer, node) {
             break;
 
         case "LabeledStatement":
-            if (!breakableTypePattern.test(node.body.type)) {
-                state.pushBreakContext(false, node.label.name);
-            }
+            // if (!breakableTypePattern.test(node.body.type)) {
+            //     state.pushBreakContext(false, node.label.name);
+            // }
             break;
 
         default:
@@ -656,9 +656,9 @@ function processCodePathToExit(analyzer, node) {
             break;
 
         case "LabeledStatement":
-            if (!breakableTypePattern.test(node.body.type)) {
-                state.popBreakContext();
-            }
+            // if (!breakableTypePattern.test(node.body.type)) {
+            //     state.popBreakContext();
+            // }
             break;
 
         default:

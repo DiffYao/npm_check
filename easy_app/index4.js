@@ -1,7 +1,11 @@
-for (let i = 0; i < 10; ++i) {
-  a = 10;
-  if (b) {
-      break;
+if (a < 10) {
+  if (a < 5) {
+    a = 11;
+  } else {
+    a = 9;
   }
-  a = 11;
+} else {
+  a = 12;
 }
+
+a = 10;

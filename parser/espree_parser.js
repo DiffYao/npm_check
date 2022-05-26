@@ -21,7 +21,7 @@ exports.default = async function (filename) {
 				ecmaFeatures: {
 					jsx: true,
 					globalReturn: true,
-					impliedStrict: true,
+					impliedStrict: false,
 				},
 			}),
 			code: content,

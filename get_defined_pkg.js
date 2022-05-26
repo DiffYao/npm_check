@@ -9,14 +9,20 @@ exports.getDeps = function getAllDeps(rootDir) {
     const devDependencies = metadata.devDependencies
         ? metadata.devDependencies
         : {};
+    const optionDep = metadata.optionalDependencies || {};    
+    const peerDep = metadata.peerDependencies || {};
 
     const dep = lodash(dependencies).keys().value();
     const devp = lodash(devDependencies).keys().value();
-    const allDeps = lodash.union(dep, devp);
+    const optionDeps = lodash(optionDep).keys().value();
+    const peerDeps = lodash(peerDep).keys().value();
+
+    const allDeps = lodash.union(dep, devp, optionDeps, peerDeps);
 
     return {
         deps: dep,
         devdeps: devp,
+        optionDeps: optionDeps,
         alldeps: allDeps,
     };
 };

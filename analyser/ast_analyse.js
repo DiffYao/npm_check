@@ -16,7 +16,7 @@ exports.func = async function (filename) {
 
 	let astTreeRes = await parser(filename);
 	if (astTreeRes.error) {
-		console.log(astTreeRes.error);
+		// console.log(astTreeRes.error);
 		return {
 			error: astTreeRes.error,
 		};
